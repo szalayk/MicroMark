@@ -1,6 +1,4 @@
-/cache/*.json
-/.env
-/vendor/
+src/cache/*.json
 node_modules/
 temp/
 .env
