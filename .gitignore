@@ -1,0 +1,9 @@
+/cache/*.json
+/.env
+/vendor/
+node_modules/
+temp/
+.env
+*.log
+*.tmp
+.DS_Store

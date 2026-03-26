@@ -1,0 +1,139 @@
+{
+    "pages": {
+        "philosophy": {
+            "title": "Philosophy",
+            "menu_order": "1",
+            "file_path": "\/home\/szalayk\/Projects\/MicroMark\/src\/content\/pages\/philosophy.md",
+            "slug": "philosophy",
+            "type": "page"
+        },
+        "": {
+            "title": "Welcome",
+            "menu_show": "false",
+            "file_path": "\/home\/szalayk\/Projects\/MicroMark\/src\/content\/pages\/index.md",
+            "slug": "",
+            "type": "page"
+        },
+        "about": {
+            "title": "About us",
+            "menu_order": "2",
+            "file_path": "\/home\/szalayk\/Projects\/MicroMark\/src\/content\/pages\/about.md",
+            "slug": "about",
+            "type": "page"
+        }
+    },
+    "posts": {
+        "fifth-post": {
+            "title": "Fifth post title",
+            "author": "John Doe",
+            "date": "2026-04-12",
+            "category": "general",
+            "tags": "fifth, sample, placeholder",
+            "status": "public",
+            "file_path": "\/home\/szalayk\/Projects\/MicroMark\/src\/content\/posts\/fifth-post.md",
+            "slug": "fifth-post",
+            "type": "post",
+            "timestamp": 1775952000
+        },
+        "fourth-post": {
+            "title": "Fourth post title",
+            "author": "John Doe",
+            "date": "2026-04-05",
+            "category": "general",
+            "tags": "fourth, sample, placeholder",
+            "status": "public",
+            "file_path": "\/home\/szalayk\/Projects\/MicroMark\/src\/content\/posts\/fourth-post.md",
+            "slug": "fourth-post",
+            "type": "post",
+            "timestamp": 1775347200
+        },
+        "third-post": {
+            "title": "Third post title",
+            "author": "John Doe",
+            "date": "2026-04-02",
+            "category": "general",
+            "tags": "third, sample, placeholder",
+            "status": "public",
+            "file_path": "\/home\/szalayk\/Projects\/MicroMark\/src\/content\/posts\/third-post.md",
+            "slug": "third-post",
+            "type": "post",
+            "timestamp": 1775088000
+        },
+        "second-post": {
+            "title": "Second post title",
+            "author": "John Doe",
+            "date": "2026-03-28",
+            "category": "general",
+            "tags": "second, sample, placeholder",
+            "status": "public",
+            "file_path": "\/home\/szalayk\/Projects\/MicroMark\/src\/content\/posts\/second-post.md",
+            "slug": "second-post",
+            "type": "post",
+            "timestamp": 1774656000
+        },
+        "first-post": {
+            "title": "First post title",
+            "author": "John Doe",
+            "date": "2026-03-26",
+            "category": "general",
+            "tags": "first, sample, placeholder",
+            "status": "public",
+            "file_path": "\/home\/szalayk\/Projects\/MicroMark\/src\/content\/posts\/first-post.md",
+            "slug": "first-post",
+            "type": "post",
+            "timestamp": 1774483200
+        }
+    },
+    "categories": {
+        "general": [
+            "fifth-post",
+            "fourth-post",
+            "third-post",
+            "second-post",
+            "first-post"
+        ]
+    },
+    "tags": {
+        "fifth": [
+            "fifth-post"
+        ],
+        "sample": [
+            "fifth-post",
+            "fourth-post",
+            "third-post",
+            "second-post",
+            "first-post"
+        ],
+        "placeholder": [
+            "fifth-post",
+            "fourth-post",
+            "third-post",
+            "second-post",
+            "first-post"
+        ],
+        "fourth": [
+            "fourth-post"
+        ],
+        "third": [
+            "third-post"
+        ],
+        "second": [
+            "second-post"
+        ],
+        "first": [
+            "first-post"
+        ]
+    },
+    "menu": [
+        {
+            "title": "Philosophy",
+            "slug": "philosophy",
+            "order": 1
+        },
+        {
+            "title": "About us",
+            "slug": "about",
+            "order": 2
+        }
+    ]
+}
