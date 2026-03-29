@@ -249,7 +249,7 @@ footer {
     padding-bottom: 20px;
 }
 
-/* Kép oszlop */
+/* Image column */
 .post-preview-image {
     flex: 0 0 250px;
     max-width: 30%;
@@ -267,7 +267,7 @@ footer {
     opacity: 0.8;
 }
 
-/* Szöveg oszlop */
+/* Text column */
 .post-preview-content {
     flex: 1;
     display: flex;

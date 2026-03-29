@@ -2,7 +2,7 @@
 
 <main class="container">
     <header class="archive-header">
-        <h1><?php echo $title; // Pl. [cite_start]"Category: Digital Wisdom"[cite: 2]?></h1>
+        <h1><?php echo $title;?></h1>
         <p>Found <?php echo count($content); ?> posts in this section.</p>
     </header>
 
