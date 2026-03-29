@@ -36,6 +36,7 @@ define('THEME_PATH', BASE_PATH . '/public/themes/' . $theme);
  * Site URL for links and assets.
  */
 define('SITE_URL', 'https://micromark.local');
+define('THEME_URL', SITE_URL . '/themes/' . $theme);
 
 /**
  * Manual loading of essential classes (if not using Composer).

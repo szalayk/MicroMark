@@ -1,23 +1,30 @@
-<?php include THEME_PATH . '/partials/header.php'; ?>
+<?php include 'partials/header.php'; ?>
 
-<main>
-    <h1><?php echo $title; ?></h1>
+<main class="container">
+    <header class="archive-header">
+        <h1><?php echo $title; // Pl. [cite_start]"Category: Digital Wisdom"[cite: 2]?></h1>
+        <p>Found <?php echo count($content); ?> posts in this section.</p>
+    </header>
 
-    <?php if (empty($listPosts)): ?>
-        <p>No entries found in this category/tag.</p>
-    <?php else: ?>
-        <?php foreach ($listPosts as $post): ?>
-            <div class="post-item">
-                <h2><a href="<?php echo SITE_URL . '/' . $post['slug']; ?>"><?php echo isset($post['title']) ? $post['title'] : 'Untitled'; ?></a></h2>
-                <div class="meta">
-                    Date: <?php echo isset($post['date']) ? $post['date'] : ''; ?> |
-                    Category: <a href="<?php echo SITE_URL . '/category/' . urlencode(isset($post['category']) ? trim($post['category']) : 'Uncategorized'); ?>">
-                        <?php echo isset($post['category']) ? $post['category'] : 'Uncategorized'; ?>
-                    </a>
-                </div>
-            </div>
-        <?php endforeach; ?>
-    <?php endif; ?>
+    <section class="post-list">
+        <?php if (!empty($content)): ?>
+            <?php foreach ($content as $post): ?>
+                <article class="post-preview">
+                    <h2>
+                        <a href="<?php echo SITE_URL . '/' . $post['slug']; ?>">
+                            <?php echo $post['title']; ?>
+                        </a>
+                    </h2>
+                    <div class="post-excerpt">
+                        <time><?php echo date('Y. m. d.', $post['timestamp']); ?></time>
+                        <p><?php echo $post['description'] ?? 'Read more about this post...'; ?></p>
+                    </div>
+                </article>
+            <?php endforeach; ?>
+        <?php else: ?>
+            <p>No posts found in this archive.</p>
+        <?php endif; ?>
+    </section>
 </main>
 
-<?php include THEME_PATH . '/partials/footer.php'; ?>
+<?php include 'partials/footer.php'; ?>

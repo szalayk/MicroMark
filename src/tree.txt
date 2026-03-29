@@ -1,0 +1,36 @@
+.
+├── app
+│   ├── build_index.php
+│   ├── config.php
+│   ├── Core
+│   │   ├── Cms.php
+│   │   ├── FileHandler.php
+│   │   └── Router.php
+│   └── Libraries
+│       └── Parsedown.php
+├── cache
+│   └── index.json
+├── content
+│   ├── pages
+│   │   ├── about.md
+│   │   ├── index.md
+│   │   └── philosophy.md
+│   └── posts
+│       ├── fifth-post.md
+│       ├── first-post.md
+│       ├── fourth-post.md
+│       ├── second-post.md
+│       └── third-post.md
+└── public
+    ├── assets
+    │   └── images
+    ├── index.php
+    ├── run-build.php
+    └── themes
+        ├── MicroSkeleton
+        ├── archive.php
+            ├── index.php
+            └── partials
+                ├── footer.php
+                ├── header.php
+                └── recent_posts.php

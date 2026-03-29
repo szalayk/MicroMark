@@ -85,6 +85,38 @@ Themes are located in `public/themes/[ThemeName]`.
 - **Out-of-Root Core:** All sensitive logic and content files are located outside the `public` directory.
 - **Build Protection:** The `run-build.php` script is protected by a mandatory `BUILD_KEY` parameter to prevent unauthorized server load.
 
+## Advanced Frontmatter & Extensibility
+
+One of the most powerful features of MicroMark is its extensible Frontmatter. You are not limited to the default fields (title, date, author). You can add **any custom key** to your Markdown files, and they will be automatically available in your PHP templates.
+
+### Example: Adding Custom Metadata
+In your `content/posts/my-project.md`:
+```markdown
+---
+title: Portfolio Project
+date: 2026-03-27
+client: Company Name
+project_url: [https://domainname.com](https://domainname.com)
+difficulty: Intermediate
+is_featured: true
+---
+```
+
+### Usage in Templates
+
+Since the Frontmatter is converted into a PHP associative array, you can access your custom data in layout.php like this:
+```PHP
+<?php if (isset($post['client'])): ?>
+    <p><strong>Client:</strong> <?php echo $post['client']; ?></p>
+<?php endif; ?>
+
+<?php if (isset($post['project_url'])): ?>
+    <a href="<?php echo $post['project_url']; ?>" class="btn">Visit Project</a>
+<?php endif; ?>
+```
+
+This flexibility allows you to use MicroMark for more than just blogs—it's perfect for portfolios, product catalogs, or documentation sites where you need specific metadata for different types of content.
+
 ## Requirements
 
 - PHP 7.4 or higher.
