@@ -1,3 +1,37 @@
+#
+# ----------------------------------------------------------------------
+# IMPORTANT: Web Server Compatibility Notice
+# ----------------------------------------------------------------------
+#
+# This configuration file is intended exclusively for use with
+# the Apache HTTP Server.
+#
+# The directives contained herein (including mod_rewrite rules)
+# are NOT compatible with Nginx, as Nginx does not support
+# .htaccess files or runtime directory-level configuration.
+#
+# If you are deploying this application on Nginx, you must
+# translate these rewrite rules into the equivalent Nginx
+# configuration.
+#
+# Example Nginx equivalent for front-controller routing:
+#
+# location / {
+#     try_files $uri $uri/ /index.php?url=$uri&$query_string;
+# }
+#
+# This ensures that all non-existent file and directory requests
+# are forwarded to index.php with the original request path.
+#
+# For optimal performance and security, it is recommended to
+# place this configuration directly in the Nginx server block
+# rather than attempting to replicate Apache behavior.
+#
+# ----------------------------------------------------------------------
+# End of notice
+# ----------------------------------------------------------------------
+#
+
 RewriteEngine On
 RewriteBase /
 
