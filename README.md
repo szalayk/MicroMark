@@ -26,7 +26,7 @@ MicroMark is a minimalist content management system designed for developers and 
 src/
 ├── app/                  # Application library
 │   ├── Core/             # Core logic, File Handler, Router
-│   ├── Helpers/	          # Helper functions
+│   ├── Helpers/          # Helper functions
 │   ├── Libraries/        # Third-party library (e.g. Parsedown)
 │   ├── build_index.php   # CLI build trigger
 │   └── config.php        # Main configuration file
