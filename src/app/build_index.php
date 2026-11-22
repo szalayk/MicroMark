@@ -12,15 +12,17 @@ require_once CORE_PATH . '/FileHandler.php';
 
 use App\Core\FileHandler;
 
-// Ensure the cache directory exists
-if (!is_dir(CACHE_PATH)) {
-    mkdir(CACHE_PATH, 0750, true);
-}
-
 $data = [
     'pages' => [],
     'posts' => [],
 ];
+
+// Ensure the cache directory exists
+if (!is_dir(CACHE_PATH) && !mkdir(CACHE_PATH, 0775, true) && !is_dir(CACHE_PATH)) {
+    $lastErr = error_get_last();
+    $data['build_error'] = 'Failed to create cache directory (' . CACHE_PATH . ')'
+        . (isset($lastErr['message']) ? ': ' . $lastErr['message'] : '');
+}
 
 // --- PROCESS POSTS ---
 $postsDir = CONTENT_PATH . '/posts';
@@ -74,7 +76,10 @@ foreach ($data['posts'] as $slug => $post) {
 
     // Process Tags (comma-separated list)
     if (!empty($post['tags'])) {
-        $tags = array_filter(array_map('trim', explode(',', $post['tags'])), static fn(string $t): bool => $t !== '');
+        $tags = array_filter(
+            array_map('trim', explode(',', $post['tags'])),
+            static fn(string $t): bool => $t !== ''
+        );
         foreach ($tags as $tag) {
             if (!isset($data['tags'][$tag])) {
                 $data['tags'][$tag] = [];
@@ -151,15 +156,33 @@ usort($menu, static function (array $a, array $b): int {
 
 $data['menu'] = $menu;
 
-// Save to JSON
-$jsonPath = CACHE_PATH . '/index.json';
-$jsonContent = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+// --- SAVE TO JSON ---
+if (empty($data['build_error'])) {
+    $jsonPath = CACHE_PATH . '/index.json';
+    $jsonContent = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 
-if ($jsonContent === false || file_put_contents($jsonPath, $jsonContent, LOCK_EX) === false) {
-    throw new RuntimeException('Failed to write cache/index.json');
+    if ($jsonContent === false) {
+        $data['build_error'] = 'Failed to encode index data to JSON: ' . json_last_error_msg();
+    } elseif (!is_writable(CACHE_PATH)) {
+        $data['build_error'] = 'Cache directory is not writable: ' . CACHE_PATH;
+    } else {
+        $written = file_put_contents($jsonPath, $jsonContent, LOCK_EX);
+        if ($written === false) {
+            $written = file_put_contents($jsonPath, $jsonContent);
+        }
+
+        if ($written === false) {
+            $data['build_error'] = 'Failed to write cache/index.json (check directory and file permissions).';
+        }
+    }
 }
 
-// Only echo the success message if running from the Command Line Interface (CLI)
-if (php_sapi_name() === 'cli') {
-    echo "index.json successfully generated at: $jsonPath\n";
+if (!empty($data['build_error'])) {
+    if (php_sapi_name() === 'cli') {
+        fwrite(STDERR, "Error: {$data['build_error']}\n");
+        exit(1);
+    }
+} elseif (php_sapi_name() === 'cli') {
+    echo "index.json successfully generated at: " . CACHE_PATH . "/index.json\n";
 }
+

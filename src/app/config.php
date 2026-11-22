@@ -47,5 +47,5 @@ require_once LIB_PATH . '/Parsedown.php';
 /**
  * Manual loading of helpers.
  */
-//require_once APP_PATH . '/Helpers/html.php';
+require_once APP_PATH . '/Helpers/html.php';
 

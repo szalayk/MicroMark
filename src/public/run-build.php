@@ -14,10 +14,8 @@ header('Cache-Control: post-check=0, pre-check=0', false);
 header('Pragma: no-cache');
 header('Expires: 0');
 
-// Load configuration
+// Load configuration and helpers
 require_once '../app/config.php';
-
-$authError = '';
 
 /*
 |--------------------------------------------------------------------------
@@ -53,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             </form>
         </div>
         <p style="text-align: center; margin-top: 16px;">
-            <a href="<?php echo htmlspecialchars((string) SITE_URL, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>" style="color: #4a90e2; text-decoration: none;">&larr; Back to Website</a>
+            <a href="<?= e((string) SITE_URL) ?>" style="color: #4a90e2; text-decoration: none;">&larr; Back to Website</a>
         </p>
     </body>
     </html>
@@ -87,7 +85,7 @@ if (
     <body>
         <div class="box">
             <h1 style="color:#e74c3c; margin-top:0;">403 - Access Denied</h1>
-            <p><?php echo htmlspecialchars($authError, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?></p>
+            <p><?= e($authError) ?></p>
             <a href="">Try Again</a>
         </div>
     </body>
@@ -97,14 +95,36 @@ if (
 }
 
 /**
- * Proceed with the build process
- * We capture the build process output if needed,
- * but since our build_index.php generates a $data array,
- * we will include it and display the statistics.
+ * Proceed with the build process.
+ * build_index.php populates $data with indexed items (or $data['build_error'] on failure).
  */
 require_once APP_PATH . '/build_index.php';
 
-// After including build_index.php, the $data variable contains all the indexed information
+if (!empty($data['build_error'])) {
+    http_response_code(500);
+    ?>
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>MicroMark Build Error</title>
+        <style>
+            body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 50px auto; padding: 20px; background: #f9f9f9; }
+            .card { background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); border-top: 5px solid #e74c3c; }
+            .error { background: #f8d7da; color: #721c24; padding: 12px; border-radius: 4px; font-weight: bold; }
+        </style>
+    </head>
+    <body>
+        <div class="card">
+            <h1>MicroMark Build Failed</h1>
+            <div class="error"><?= e((string) $data['build_error']) ?></div>
+        </div>
+    </body>
+    </html>
+    <?php
+    exit;
+}
+
 $pagesCount = count($data['pages'] ?? []);
 $postsCount = count($data['posts'] ?? []);
 $catsCount  = count($data['categories'] ?? []);
@@ -148,31 +168,31 @@ $indexFile  = realpath(CACHE_PATH . '/index.json') ?: (CACHE_PATH . '/index.json
         <tbody>
             <tr>
                 <td>Static Pages</td>
-                <td class="val"><?php echo $pagesCount; ?></td>
+                <td class="val"><?= $pagesCount ?></td>
             </tr>
             <tr>
                 <td>Blog Posts</td>
-                <td class="val"><?php echo $postsCount; ?></td>
+                <td class="val"><?= $postsCount ?></td>
             </tr>
             <tr>
                 <td>Categories</td>
-                <td class="val"><?php echo $catsCount; ?></td>
+                <td class="val"><?= $catsCount ?></td>
             </tr>
             <tr>
                 <td>Total Tags</td>
-                <td class="val"><?php echo $tagsCount; ?></td>
+                <td class="val"><?= $tagsCount ?></td>
             </tr>
         </tbody>
     </table>
 
     <div class="footer">
-        Cache generated at: <?php echo date('Y-m-d H:i:s'); ?><br>
-        File: <?php echo htmlspecialchars($indexFile, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>
+        Cache generated at: <?= e(date('Y-m-d H:i:s')) ?><br>
+        File: <?= e($indexFile) ?>
     </div>
 </div>
 
 <p style="text-align: center;">
-    <a href="<?php echo htmlspecialchars((string) SITE_URL, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>" style="color: #4a90e2; text-decoration: none;">&larr; Back to Website</a>
+    <a href="<?= e((string) SITE_URL) ?>" style="color: #4a90e2; text-decoration: none;">&larr; Back to Website</a>
 </p>
 
 </body>
