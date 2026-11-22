@@ -24,21 +24,21 @@ MicroMark is a minimalist content management system designed for developers and 
 
 ```text
 src/
-├── app/                # Application library
-│   ├── Core/			# Core logic, File Handler, Router
-│   ├── Helpers/			# Helper functions
-│   ├── Libraries/		# Third-party library (e.g. Parsedown)
-│   ├── build_index.php # CLI build trigger
-│   └── config.php      # Main configuration file
-├── cache/              # Generated JSON index (Must be writable)
-├── content/            # Your content source
-│   ├── pages/          # Static pages (e.g., about.md)
-│   └── posts/          # Blog entries (e.g., my-first-post.md)
-└── public/             # Document root (The only folder accessible via web)
-    ├── assets/images   # Public images
-    ├── themes/         # Layout templates
-    ├── index.php       # Entry point
-    └── run-build.php   # Secure web-based build trigger
+├── app/                   # Application library
+│   ├── Core/              # Core logic, File Handler, Router
+│   ├── Helpers/	           # Helper functions
+│   ├── Libraries/         # Third-party library (e.g. Parsedown)
+│   ├── build_index.php    # CLI build trigger
+│   └── config.php         # Main configuration file
+├── cache/                 # Generated JSON index (Must be writable)
+├── content/               # Your content source
+│   ├── pages/             # Static pages (e.g., about.md)
+│   └── posts/             # Blog entries (e.g., my-first-post.md)
+└── public/                # Document root (The only folder accessible via web)
+    ├── assets/images      # Public images
+    ├── themes/            # Layout templates
+    ├── index.php          # Entry point
+    └── run-build.php      # Secure web-based build trigger
 ```
 
 ## Installation
