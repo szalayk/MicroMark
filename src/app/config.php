@@ -43,3 +43,9 @@ define('THEME_URL', SITE_URL . '/themes/' . $theme);
  */
 require_once CORE_PATH . '/Router.php';
 require_once LIB_PATH . '/Parsedown.php';
+
+/**
+ * Manual loading of helpers.
+ */
+//require_once APP_PATH . '/Helpers/html.php';
+

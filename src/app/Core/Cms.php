@@ -17,6 +17,8 @@ class Cms
         }
         $this->indexData = json_decode(file_get_contents($jsonPath), true);
         $this->parsedown = new Parsedown();
+        $this->parsedown->setSafeMode(true);
+        $this->parsedown->setMarkupEscaped(false);
     }
 
     public function handleRequest($segments)
@@ -56,7 +58,11 @@ class Cms
      */
     private function render($nodeData)
     {
-        $parsed = FileHandler::parseFile($nodeData['file_path']);
+        $parsed = FileHandler::parseFile((string) ($nodeData['file_path'] ?? ''));
+        if ($parsed === null) {
+            $this->error404();
+            return;
+        }
         
         $title = $nodeData['title'] ?? 'Untitled';
         $content = $this->parsedown->text($parsed['content']);
@@ -72,10 +78,10 @@ class Cms
             $template = 'index.php';
         } elseif ($nodeData['type'] === 'page') {
             // Try page.php for static pages
-            $template = file_exists(THEME_PATH . '/page.php') ? 'page.php' : 'index.php';
+            $template = file_exists(THEME_PATH.'/page.php') ? 'page.php' : 'index.php';
         } elseif ($nodeData['type'] === 'post') {
             // Try post.php for blog posts (equivalent to WP single.php)
-            $template = file_exists(THEME_PATH . '/post.php') ? 'post.php' : 'index.php';
+            $template = file_exists(THEME_PATH.'/post.php') ? 'post.php' : 'index.php';
         }
 
         require_once THEME_PATH . '/' . $template;
@@ -92,8 +98,8 @@ class Cms
         $content = $listPosts; // Pass the array of posts to the archive template
 
         // Try archive.php, fallback to index.php 
-        $template = file_exists(THEME_PATH . '/archive.php') ? 'archive.php' : 'index.php';
-        require_once THEME_PATH . '/' . $template;
+        $template = file_exists(THEME_PATH.'/archive.php') ? 'archive.php' : 'index.php';
+        require_once THEME_PATH.'/'.$template;
     }
 
     private function getRecentPosts($limit = 5)

@@ -52,7 +52,7 @@ MicroMark is a minimalist content management system designed for developers and 
 4.  **Configure:** Edit `app/config.php` to set your `SITE_URL` and `BUILD_KEY`.
 5.  **Initial Build:** Run the indexer via CLI or browser:
       - **CLI:** `php app/build_index.php`
-      - **Web:** `yourdomain.com/run-build.php?key=your_secret_key`
+      - **Web:** `yourdomain.com/run-build.php`
 
 ## Creating Content
 

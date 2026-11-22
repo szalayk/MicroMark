@@ -2,16 +2,16 @@
 
 <main class="container">
     <article class="page-content">
-        <h1><?php echo $title; ?></h1>
+        <h1><?= e($title) ?></h1>
 
         <?php if(isset($meta['image'])): ?>
             <div class="post-featured-image">
-                <img src="<?php echo SITE_URL . $meta['image']; ?>">
+                <img src="<?= e(SITE_URL.$meta['image']) ?>">
             </div>
         <?php endif; ?>
 
         <section class="content">
-            <?php echo $content; ?>
+            <?= $content ?>
         </section>
     </article>
 </main>

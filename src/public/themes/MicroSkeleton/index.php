@@ -2,7 +2,7 @@
 
 <main class="container">
     <section class="home-content">
-        <?php echo $content; ?>
+        <?= $content ?>
     </section>
 
     <hr>
@@ -13,24 +13,24 @@
             <article class="post-preview-horizontal">
                 <?php if (!empty($post['image'])): ?>
                     <div class="post-preview-image">
-                        <a href="<?php echo SITE_URL . '/' . $post['slug']; ?>">
-                            <img src="<?php echo SITE_URL . $post['image']; ?>" alt="<?php echo $post['title']; ?>">
+                        <a href="<?= e(SITE_URL.'/'.$post['slug']) ?>">
+                            <img src="<?= e(SITE_URL.$post['image']) ?>" alt="<?= e($post['title']) ?>">
                         </a>
                     </div>
                 <?php endif; ?>
                 
                 <div class="post-preview-content">
                     <h2>
-                        <a href="<?php echo SITE_URL . '/' . $post['slug']; ?>">
-                            <?php echo $post['title'] ?? 'Untitled post'; ?>
+                        <a href="<?= e(SITE_URL.'/'.$post['slug']) ?>">
+                            <?= e($post['title'] ?? 'Untitled post') ?>
                         </a>
                     </h2>
                     <div class="post-meta">
-                        <time><?php echo $post['date'] ?? ''; ?></time>
+                        <time><?= e($post['date'] ?? '') ?></time>
                     </div>
                     <?php if (!empty($post['description'])): ?>
                         <p class="post-excerpt-text">
-                            <?php echo $post['description']; ?>
+                            <?= e($post['description']) ?>
                         </p>
                     <?php endif; ?>
                 </div>

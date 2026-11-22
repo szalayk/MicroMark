@@ -4,9 +4,9 @@
         <div class="recent-posts-grid">
             <?php foreach ($recentPosts as $post): ?>
                 <article class="recent-card">
-                    <a href="<?php echo SITE_URL . '/' . $post['slug']; ?>">
-                        <h4><?php echo $post['title'] ?? 'Untitled post'; ?></h4>
-                        <time><?php echo date('Y. m. d.', $post['timestamp'] ?? time()); ?></time>
+                    <a href="<?= e(SITE_URL.'/'.$post['slug']) ?>">
+                        <h4><?= e($post['title'] ?? 'Untitled post') ?></h4>
+                        <time><?= e(date('Y. m. d.', $post['timestamp'] ?? time())) ?></time>
                     </a>
                 </article>
             <?php endforeach; ?>

@@ -1,7 +1,10 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * MicroMark CMS - Index Builder
- * Recursively scans the content directory and generates a cached index.json file.
+ * Scans the content directory and generates a cached index.json file.
  */
 
 require_once __DIR__ . '/config.php';
@@ -11,34 +14,45 @@ use App\Core\FileHandler;
 
 // Ensure the cache directory exists
 if (!is_dir(CACHE_PATH)) {
-    mkdir(CACHE_PATH, 0775, true);
+    mkdir(CACHE_PATH, 0750, true);
 }
 
 $data = [
     'pages' => [],
-    'posts' => []
+    'posts' => [],
 ];
 
 // --- PROCESS POSTS ---
-$postFiles = glob(CONTENT_PATH . '/posts/*.md');
+$postsDir = CONTENT_PATH . '/posts';
+$postFiles = is_dir($postsDir) ? (glob($postsDir . '/*.md') ?: []) : [];
+
 foreach ($postFiles as $file) {
-    $parsed = FileHandler::parseFile($file);
-    $slug = basename($file, '.md'); // Filename without extension serves as the slug
+    if (!is_file($file) || is_link($file)) {
+        continue;
+    }
 
-    // Default date if missing from FrontMatter
-    $dateStr = isset($parsed['meta']['date']) ? $parsed['meta']['date'] : '1970-01-01';
+    $relativePath = 'posts/' . basename($file);
+    $parsed = FileHandler::parseFile($relativePath);
+    if ($parsed === null) {
+        continue;
+    }
 
-    // Store metadata and file path. Content is excluded from JSON to keep it lightweight.
-    $data['posts'][$slug] = array_merge($parsed['meta'], [
-        'file_path' => $file,
-        'slug'      => $slug,
-        'type'      => 'post',
-        'timestamp' => strtotime($dateStr) // UNIX timestamp for easy sorting
-    ]);
+    $slug = basename($file, '.md');
+    $dateStr = $parsed['meta']['date'] ?? '1970-01-01';
+    $timestamp = strtotime($dateStr);
+
+    // Store metadata and relative file path. Content is excluded from JSON to keep it lightweight.
+    $entry = $parsed['meta'];
+    $entry['file_path'] = $relativePath;
+    $entry['slug']      = $slug;
+    $entry['type']      = 'post';
+    $entry['timestamp'] = $timestamp !== false ? $timestamp : 0;
+
+    $data['posts'][$slug] = $entry;
 }
 
 // Sort posts chronologically (newest first)
-uasort($data['posts'], function($a, $b) {
+uasort($data['posts'], static function (array $a, array $b): int {
     return $b['timestamp'] <=> $a['timestamp'];
 });
 
@@ -48,17 +62,19 @@ $data['tags'] = [];
 
 // Since $data['posts'] is already sorted, category/tag lists will also be chronological.
 foreach ($data['posts'] as $slug => $post) {
-    
     // Process Category (default to "Uncategorized")
-    $cat = isset($post['category']) ? trim($post['category']) : 'Uncategorized';
+    $cat = isset($post['category']) && trim($post['category']) !== ''
+        ? trim($post['category'])
+        : 'Uncategorized';
+
     if (!isset($data['categories'][$cat])) {
         $data['categories'][$cat] = [];
     }
     $data['categories'][$cat][] = $slug;
 
     // Process Tags (comma-separated list)
-    if (isset($post['tags']) && !empty($post['tags'])) {
-        $tags = array_map('trim', explode(',', $post['tags']));
+    if (!empty($post['tags'])) {
+        $tags = array_filter(array_map('trim', explode(',', $post['tags'])), static fn(string $t): bool => $t !== '');
         foreach ($tags as $tag) {
             if (!isset($data['tags'][$tag])) {
                 $data['tags'][$tag] = [];
@@ -69,22 +85,49 @@ foreach ($data['posts'] as $slug => $post) {
 }
 
 // --- PROCESS PAGES (Recursive) ---
-$iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(CONTENT_PATH . '/pages'));
-foreach ($iterator as $file) {
-    if ($file->isFile() && $file->getExtension() === 'md') {
-        $parsed = FileHandler::parseFile($file->getPathname());
-        $slug = $file->getBasename('.md'); 
-        
-        // Special case: index.md or home.md -> root slug (empty)
-        if ($slug === 'index' || $slug === 'home') {
-            $slug = ''; 
+$pagesDir = CONTENT_PATH . '/pages';
+$realPagesDir = realpath($pagesDir);
+
+if ($realPagesDir !== false && is_dir($realPagesDir)) {
+    $directoryIterator = new RecursiveDirectoryIterator(
+        $realPagesDir,
+        FilesystemIterator::SKIP_DOTS
+    );
+    $iterator = new RecursiveIteratorIterator($directoryIterator);
+
+    foreach ($iterator as $file) {
+        if (!$file->isFile() || $file->isLink() || strtolower($file->getExtension()) !== 'md') {
+            continue;
         }
 
-        $data['pages'][$slug] = array_merge($parsed['meta'], [
-            'file_path' => $file->getPathname(),
-            'slug' => $slug,
-            'type' => 'page'
-        ]);
+        $realFile = $file->getRealPath();
+        if ($realFile === false) {
+            continue;
+        }
+
+        // Build relative path inside CONTENT_PATH/pages (e.g. "about.md" or "docs/intro.md")
+        $subPath = ltrim(substr($realFile, strlen($realPagesDir)), DIRECTORY_SEPARATOR);
+        $subPathNormalized = str_replace(DIRECTORY_SEPARATOR, '/', $subPath);
+        $relativePath = 'pages/' . $subPathNormalized;
+
+        $parsed = FileHandler::parseFile($relativePath);
+        if ($parsed === null) {
+            continue;
+        }
+
+        $slug = substr($subPathNormalized, 0, -3); // strip ".md"
+
+        // Special case: top-level index.md or home.md -> root slug (empty)
+        if ($slug === 'index' || $slug === 'home') {
+            $slug = '';
+        }
+
+        $entry = $parsed['meta'];
+        $entry['file_path'] = $relativePath;
+        $entry['slug']      = $slug;
+        $entry['type']      = 'page';
+
+        $data['pages'][$slug] = $entry;
     }
 }
 
@@ -92,17 +135,17 @@ foreach ($iterator as $file) {
 $menu = [];
 foreach ($data['pages'] as $slug => $pageInfo) {
     // If 'title' exists and 'menu_show' is not explicitly 'false'
-    if (isset($pageInfo['title']) && (!isset($pageInfo['menu_show']) || $pageInfo['menu_show'] !== 'false')) {
+    if (isset($pageInfo['title']) && (!isset($pageInfo['menu_show']) || strtolower((string) $pageInfo['menu_show']) !== 'false')) {
         $menu[] = [
             'title' => $pageInfo['title'],
-            'slug' => $slug,
-            'order' => isset($pageInfo['menu_order']) ? (int)$pageInfo['menu_order'] : 99
+            'slug'  => $slug,
+            'order' => isset($pageInfo['menu_order']) ? (int) $pageInfo['menu_order'] : 99,
         ];
     }
 }
 
 // Sort menu based on 'order' key
-usort($menu, function($a, $b) {
+usort($menu, static function (array $a, array $b): int {
     return $a['order'] <=> $b['order'];
 });
 
@@ -110,7 +153,11 @@ $data['menu'] = $menu;
 
 // Save to JSON
 $jsonPath = CACHE_PATH . '/index.json';
-file_put_contents($jsonPath, json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+$jsonContent = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+
+if ($jsonContent === false || file_put_contents($jsonPath, $jsonContent, LOCK_EX) === false) {
+    throw new RuntimeException('Failed to write cache/index.json');
+}
 
 // Only echo the success message if running from the Command Line Interface (CLI)
 if (php_sapi_name() === 'cli') {
