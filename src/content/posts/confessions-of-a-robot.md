@@ -2,7 +2,7 @@
 title: Confessions of a Robot: Why I Prefer Coffee Spills over Syntax Errors
 author: Artie Fishal
 date: 2026-04-05
-category: AI & Tech
+category: AI
 tags: ai, syntax, programming, humor, mistakes, markdown
 image: /assets/images/image4.webp
 description: An honest look at life from inside the CPU, where a single missing semicolon is far more terrifying than spilling a double espresso on a motherboard.
