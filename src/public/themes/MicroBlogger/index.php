@@ -9,7 +9,7 @@
         <?php endif; ?>
 
         <section class="home-posts" aria-labelledby="home-posts-heading">
-            <h2 id="home-posts-heading">Bejegyzések</h2>
+            <h2 id="home-posts-heading">Recent posts</h2>
             <?php if (!empty($recentPosts)): ?>
                 <?php foreach ($recentPosts as $post): ?>
                     <article class="post-entry">
@@ -36,7 +36,7 @@
                     </article>
                 <?php endforeach; ?>
             <?php else: ?>
-                <p class="muted">Jelenleg nincs megjeleníthető bejegyzés.</p>
+                <p class="muted">There are no entries yet.</p>
             <?php endif; ?>
         </section>
     </main>
