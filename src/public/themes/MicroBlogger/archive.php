@@ -1,10 +1,18 @@
 <?php include 'partials/header.php'; ?>
 
+<?php
+if (count($content) <= 1) {
+	$text = '&nbsp;post on this topic';
+} else {
+	$text = '&nbsp;posts on this topic';
+}
+?>
+
 <div class="container layout-grid">
     <main class="main-content">
         <header class="entry-header">
             <h1><?= e($title) ?></h1>
-            <p class="entry-meta"><?= e(count($content)) ?> bejegyzés ebben a nézetben</p>
+            <p class="entry-meta"><?= e(count($content)).$text ?></p>
         </header>
 
         <?php if (!empty($content)): ?>

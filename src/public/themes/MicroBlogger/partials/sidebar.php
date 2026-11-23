@@ -1,4 +1,4 @@
-<aside class="sidebar" aria-label="Legutóbbi bejegyzések">
+<aside class="sidebar" aria-label="Recent posts">
     <h2>Recent posts</h2>
     <?php if (!empty($recentPosts)): ?>
         <ul class="recent-list">
